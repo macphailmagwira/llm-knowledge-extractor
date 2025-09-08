@@ -26,7 +26,7 @@ docker compose exec web pytest -v
 
 POST /analyze - Analyze new text
 ```
-curl -X POST "http://localhost:11000/analyze
+curl -X POST "http://localhost:11000/api/v1/text_analyzer/analyze
 " \
 -H "Content-Type: application/json" \
 -d '{"text": "Your text here"}'
@@ -34,18 +34,18 @@ curl -X POST "http://localhost:11000/analyze
 
 GET /search - Search analyses by topic or keyword
 ```
-curl "http://localhost:11000/search?topic=technology&limit=10"
+curl "http://localhost:11000/api/v1/text_analyzer/search?topic=technology&limit=10"
 ```
 
 GET /analysis/{id} - Get specific analysis by ID
 ```
-curl "http://localhost:11000/analysis/{id}"
+curl "http://localhost:11000/api/v1/text_analyzer/analysis/{analysis_id}"
 ```
 
 
 ### Batch Analysis
 ```
- ~ curl -X POST "http://localhost:11000/api/v1/text_analyzer/batch/analyze" \
+ ~ curl -X POST "http://localhost:11000/api/v1/text_analyzer/analysis/{analysis_id}" \
   -H "Content-Type: application/json" \
   -d '{                                                                  "texts": [
       "Apple Inc. is a technology company based in Cupertino, California.",
