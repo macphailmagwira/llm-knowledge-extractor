@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "llm_knowledge_extractor"
+version = "0.1.0"
+description = "Knowledge extractor"
+authors = ["Macphail Magwira "]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.9"
+fastapi = {extras = ["all"], version = "^0.115.6"}
+alembic = "^1.14.0"
+psycopg2 = "^2.9.9"
+databases = "^0.9.0"
+asyncpg = "^0.29.0"
+python-jose = {extras = ["cryptography"], version = "^3.4.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-multipart = ">=0.0.7"
+pytest = "^7.4.4"
+sqlalchemy-utils = "^0.41.1"
+aioredis = "^2.0.1"
+uvicorn = "^0.34.0"
+pydantic = "^2.10.5"
+httpx = "^0.28.1"
+types-requests = "^2.32.0.20250306"
+mypy = "^1.15.0"
+psycopg2-binary = "^2.9.10"
+openai = "^1.73.0"
+sqlalchemy = "^2.0.40"
+pymongo = "^4.12.0"
+pycryptodome = "^3.22.0"
+azure-ai-inference = "^1.0.0b9"
+psutil = "^7.0.0"
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
+python-dotenv = "^1.0.1"
+black = "^24.10.0"
+mypy = "^1.14.1"
+pre-commit = "^4.0.1"
+types-requests = "^2.32.0.20250306"
+pytest-asyncio = "0.21.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+

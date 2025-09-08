@@ -1,0 +1,53 @@
+
+services:
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile.web
+    working_dir: /usr/src/app
+    environment:
+      - PYTHONPATH=/usr/src/app/src
+      - PYTHONUNBUFFERED=1
+    command: uvicorn llm_knowledge_extractor.main:app --log-level debug --host 0.0.0.0 --port 11000 --reload --reload-dir /usr/src/app
+    volumes:
+      - ./src:/usr/src/app/src
+      - /var/run/docker.sock:/var/run/docker.sock
+    expose:
+      - "11000"
+    ports:
+      - "11000:11000"
+
+    env_file:
+      - .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - knowledge_extractor_network
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "$POSTGRES_DB", "-U", "$POSTGRES_USER"]
+      interval: 10s
+      timeout: 2s
+      retries: 60
+      start_period: 2s
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    restart: always
+    networks:
+      - knowledge_extractor_network
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  knowledge_extractor_network:
+    name: knowledge_extractor_network

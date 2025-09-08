@@ -1,0 +1,60 @@
+# Pull official base image
+FROM python:3.9-slim-bullseye
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/usr/src/app/src
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1
+ENV PIP_NO_CACHE_DIR=1
+
+# Configure apt timeouts and retries
+RUN echo 'Acquire::http::Timeout "300";' > /etc/apt/apt.conf.d/99timeout && \
+    echo 'Acquire::https::Timeout "300";' >> /etc/apt/apt.conf.d/99timeout && \
+    echo 'Acquire::Retries "3";' >> /etc/apt/apt.conf.d/99timeout
+
+# Use a faster mirror
+RUN sed -i 's|http://deb.debian.org/debian|http://cdn-fastly.deb.debian.org/debian|g' /etc/apt/sources.list
+
+# Update package list
+RUN apt-get update
+
+# Install packages in smaller groups to reduce timeout risk
+RUN apt-get install -y --no-install-recommends build-essential
+
+RUN apt-get install -y --no-install-recommends libpq-dev
+
+RUN apt-get install -y --no-install-recommends gcc
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install Poetry
+RUN pip install --no-cache-dir poetry
+
+# Copy just pyproject.toml and poetry.lock first to leverage Docker cache
+COPY pyproject.toml poetry.lock* ./
+
+# Install dependencies separately from code for better caching
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-interaction --no-ansi --no-root
+
+# Copy project files after dependencies are installed, excluding .env file
+COPY . .
+RUN if [ -f ".env" ]; then rm .env; fi
+
+# Install the project itself
+RUN poetry install --no-interaction --no-ansi
+
+# Create screenshots directory
+RUN mkdir -p /usr/src/app/public/screenshots
+
+# Fix entrypoint path and make it executable
+COPY docker/web/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+# Use ENTRYPOINT 
+ENTRYPOINT ["/app/entrypoint.sh"]
