@@ -45,7 +45,7 @@ curl "http://localhost:11000/api/v1/text_analyzer/analysis/{analysis_id}"
 
 ### Batch Analysis
 ```
- ~ curl -X POST "http://localhost:11000/api/v1/text_analyzer/analysis/{analysis_id}" \
+ ~ curl -X POST "http://localhost:11000/api/v1/text_analyzer/batch/analyze" \
   -H "Content-Type: application/json" \
   -d '{                                                                  "texts": [
       "Apple Inc. is a technology company based in Cupertino, California.",
