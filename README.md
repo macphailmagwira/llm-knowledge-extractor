@@ -63,6 +63,10 @@ I built the prototype using FastAPI for a lightweight, async-friendly API with c
 
 Obviously i was not meant to spend too much time on this, so i focused on the basic structure of how i usually design my Python based AI projects
 
+I implemented batch support using FastAPI background tasks, which works for this prototype but is not as scalable or fault-tolerant as a dedicated task queue like Celery.
+
+The API runs on Uvicorn directly for simplicity, but in production I’d use Gunicorn + Uvicorn workers for better concurrency and stability.
+
 I used a basic noun frequency extractor instead of a full NLP pipeline (e.g., spaCy) to save setup time.
 
 Error handling is minimal — only core cases (empty input, LLM failure) are covered instead of a full validation framework.
